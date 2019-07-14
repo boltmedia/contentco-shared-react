@@ -1,0 +1,180 @@
+@import "src/styles/variables";
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 0 18px;
+  // margin: 6px 4px;
+  font-family: $cerebri;
+  min-width: 75px;
+  min-height: 42px;
+  border-radius: 3px;
+  box-sizing: border-box;
+  border: 2px solid transparent;
+  cursor: pointer;
+  vertical-align: middle;
+  text-align: center;
+  user-select: none;
+  white-space: nowrap;
+  font-weight: 500;
+  font-size: 16px;
+  text-decoration: none;
+  overflow: hidden;
+  line-height: 38px;
+  transition: background-color .1s $cubic;
+  will-change: background;
+  word-wrap: break-word;
+
+  &~& {
+    margin-left: 10px;
+  }
+}
+
+.blue {
+  background-color: $blue-100;
+  color: $white;
+
+  &:hover {
+    background-color: $blue-alt;
+  }
+}
+
+.darkblue {
+  background-color: $darkblue;
+  color: $white;
+
+  &:hover {
+    background-color: $darkblue-alt;
+    color: $white;
+  }
+
+  &:active {
+    background-color: $darkblue;
+  }
+}
+
+.gray {
+  background-color: $gray-80;
+  color: $white;
+  border: 1px solid transparent;
+
+  &:hover,
+  &:active,
+  &.active {
+    background-color: $gray-100;
+  }
+
+  &[disabled] {
+    &:hover {
+      background-color: $gray-40;
+    }
+
+    cursor: default;
+    background-color: $gray-40;
+  }
+}
+
+.white {
+  background-color: $white;
+  color: $darkblue;
+
+  &:hover {
+    background-color: $blue-5;
+    color: $darkblue;
+    box-shadow: $card-shadow;
+  }
+}
+
+.blueOutline {
+  color: $blue-100;
+  border-color: $blue-100;
+
+  &:hover {
+    border-color: $darkblue;
+    color: $darkblue;
+  }
+}
+
+
+.whiteBlueoutline {
+  color: $darkblue;
+  border-color: $white;
+  background-color: $white;
+  border-color: $darkblue;
+  word-break: break-word;
+  white-space: normal;
+
+  &:hover {
+    background-color: $gray-5;
+    color: $darkblue;
+  }
+}
+
+
+.darkblueOutline {
+  color: $darkblue;
+  border: 2px solid $darkblue;
+
+  &:hover {
+    border-color: $blue-100;
+    color: $blue-100;
+    background: $white;
+  }
+}
+
+.fullwidth {
+  width: 100%;
+  margin: 6px 0px;
+}
+
+.large {
+  height: 56px;
+}
+
+.fullwidthLarge {
+  width: 100%;
+  margin: 6px 0px;
+  height: 56px;
+}
+
+.ctaDarkblue {
+  background-color: $darkblue;
+  color: $white;
+  padding: 7px 24px;
+  margin: 6px 10px;
+  min-width: 200px;
+
+  &:hover {
+    background-color: $darkblue-alt;
+    color: $white;
+  }
+
+  &:active {
+    background-color: $darkblue;
+  }
+}
+
+.ctaWhite {
+  background-color: $white;
+  color: $darkblue;
+  padding: 7px 24px;
+  margin: 6px 10px;
+  min-width: 200px;
+
+  &:hover {
+    background-color: $gray-5;
+    color: $darkblue;
+  }
+}
+
+.ctaWhiteOutline {
+  color: $white;
+  border-color: $white;
+
+  &:hover {
+    border-color: $light-blue;
+    color: $light-blue;
+  }
+}

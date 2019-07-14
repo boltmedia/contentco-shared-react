@@ -1,0 +1,145 @@
+@import "src/styles/variables";
+
+@keyframes spin {
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes spin {
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+$brand-success: #5cb85c;
+$loader-size: 100px;
+$check-height: $loader-size/2;
+$check-width: $check-height/2;
+$check-left: ($loader-size/6 + $loader-size/12);
+$check-thickness: 3px;
+$check-color: $brand-success;
+$error-color: red;
+$error-left: $loader-size/4;
+
+@keyframes checkmark {
+  0% {
+    height: 0;
+    width: 0;
+    opacity: 1;
+  }
+
+  20% {
+    height: 0;
+    width: $check-width;
+    opacity: 1;
+  }
+
+  40% {
+    height: $check-height;
+    width: $check-width;
+    opacity: 1;
+  }
+
+  100% {
+    height: $check-height;
+    width: $check-width;
+    opacity: 1;
+  }
+}
+
+
+
+
+.loader {
+  // height: 100%;
+  // width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // overflow: hidden;
+  transition: all .2s $cubic;
+  position: relative;
+
+  .checkmark {
+    animation-duration: 800ms;
+    animation-timing-function: ease;
+    animation-name: checkmark;
+    transform: scaleX(-1) rotate(135deg);
+    height: $check-height;
+    width: $check-width;
+    transform-origin: left top;
+    border-right: $check-thickness solid $check-color;
+    border-top: $check-thickness solid $check-color;
+    left: -$check-width;
+    top: $check-width;
+    position: absolute;
+  }
+
+
+  .error {
+    position: absolute;
+    left: -$check-width;
+    top: 0;
+    width: $loader-size/2;
+    height: $loader-size/2;
+
+    &:before,
+    &:after {
+      position: absolute;
+      content: ' ';
+      height: $loader-size/2;
+      width: 2px;
+      background-color: #f00;
+    }
+
+    &:before {
+      transform: rotate(45deg);
+    }
+
+    &:after {
+      transform: rotate(-45deg);
+    }
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border: 3px solid $blue-20;
+    border-radius: 50%;
+    border-top-color: $blue-80;
+    animation: spin 1s ease-in-out infinite;
+    -webkit-animation: spin 1s ease-in-out infinite;
+  }
+
+  &.large .spinner {
+    width: 50px;
+    height: 50px;
+  }
+
+  &.small .spinner {
+    width: 15px;
+    height: 15px;
+  }
+
+  &.white .spinner {
+    border: 3px solid $white;
+    border-top-color: $blue-20;
+  }
+
+  &.blue .spinner {
+    border: 3px solid $blue-20;
+    border-top-color: $blue-80;
+  }
+
+}
+
+
+.inline {
+  
+}
+
+.full {
+  margin: auto;
+}

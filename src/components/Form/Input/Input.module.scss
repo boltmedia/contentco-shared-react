@@ -1,0 +1,466 @@
+@import "src/styles/variables";
+
+
+.container {
+  width: 100%;
+  box-sizing: border-box;
+  height: 56px + 2px;
+  border-radius: 4px;
+  position: relative;
+  // background-color: $gray-5;
+  background-color: $white;
+  transition: 0.3s background-color $cubic, 0.3s box-shadow $cubic;
+  // box-shadow: $basic-shadow;
+  border: 1px solid $gray-20;
+
+  .field::-webkit-input-placeholder {
+    color: $darkblue-alt;
+  }
+
+  .field::-moz-placeholder {
+    color: $darkblue-alt;
+  }
+
+  .field:-ms-input-placeholder {
+    color: $darkblue-alt;
+  }
+
+  .field:-moz-placeholder {
+    color: $darkblue-alt;
+  }
+
+  &.active {
+    background-color: $white;
+    // box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.2);
+
+    .field::-webkit-input-placeholder {
+      color: $gray-40;
+    }
+
+    .field::-moz-placeholder {
+      color: $gray-40;
+    }
+
+    .field:-ms-input-placeholder {
+      color: $gray-40;
+    }
+
+    .field:-moz-placeholder {
+      color: $gray-40;
+    }
+
+    :global {
+
+      // For select
+      .s-contact__placeholder {
+        padding: 24px 0 8px 0;
+        color: $gray-40 !important;
+      }
+
+    }
+
+
+    .field {
+      padding: 24px 16px 8px 16px;
+    }
+
+    .field+.label {
+      top: 4px;
+      opacity: 1;
+      color: $darkblue;
+    }
+
+  }
+
+  .field {
+    box-sizing: border-box;
+    width: 100%;
+    height: 56px;
+    position: relative;
+    padding: 0px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: normal;
+    background-color: transparent;
+    color: $black;
+    outline: none;
+    box-shadow: 0px 4px 20px 0px transparent;
+    transition: 0.3s background-color ease-in-out, 0.3s box-shadow ease-in-out,
+      0.1s padding ease-in-out;
+    -webkit-appearance: none;
+  }
+
+  &.containerArea {
+    height: inherit;
+  }
+
+  .field.textArea {
+    min-height: 112px;
+
+    // height: 100px;
+    resize: vertical;
+    position: relative;
+    // z-index: $z-base;
+    width: 100%;
+    // border: 1px solid $gray-20;
+    background: none;
+    // border-radius: 3px;
+    box-sizing: border-box;
+    font-size: 16px;
+    line-height: 22px;
+    padding: 16px;
+    overflow: auto;
+    vertical-align: top;
+    // margin-bottom: 10px;
+  }
+
+
+  &.active {
+    .field {
+      padding: 24px 16px 8px 16px;
+    }
+  }
+
+  .field+.label {
+    position: absolute;
+    top: 24px;
+    left: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 24px;
+    color: $white;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.1s all ease-in-out;
+  }
+
+  .field+.label.error {
+    color: $strongred;
+  }
+
+  &:hover {
+    background-color: $white;
+    // background-color: rgba(255, 255, 255, 0.45);
+    // box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.05);
+  }
+
+  &:focus {
+    background-color: $white;
+    // transition: 0.3s all $cubic;
+    // border-radius: 4px;
+    // outline: 1px solid red;
+    // outline-offset: -2px;
+  }
+
+  &.locked {
+    pointer-events: none;
+    background-color: $gray-5;
+  }
+
+
+  .predicted {
+    position: absolute;
+    top: 8px;
+    left: 16px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    color: $gray-20;
+    opacity: 1;
+    pointer-events: none;
+  }
+
+  .field.select {
+    padding: 0;
+
+    &+.label {
+      position: absolute;
+      top: 24px;
+      left: 16px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 24px;
+      color: $white;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.1s all ease-in-out;
+
+      &.hasValue {
+        opacity: 1;
+        color: $darkblue;
+        top: 4px;
+
+      }
+
+      &.error {
+        color: $strongred;
+        opacity: 1;
+        top: 4px;
+      }
+
+    }
+
+
+
+    :global {
+      .s-contact__control {
+        border: 0;
+        height: 56px;
+      }
+
+      .s-contact__placeholder {
+        color: $darkblue-alt;
+        transition: 0.1s all ease-in-out;
+        margin-left: 1px;
+
+      }
+
+      .s-contact__menu {
+        z-index: $z-menu;
+      }
+
+      .s-contact__value-container {
+        height: 56px;
+        // line-height: 1;
+      }
+
+      .s-contact__single-value {
+        transform: none;
+        line-height: 1;
+        padding-bottom: 2px;
+
+      }
+
+      .s-contact__value-container--has-value {
+        padding: 21px 16px 8px 16px;
+
+        &.s-contact__value-container--is-multi {
+          padding: 21px 12px 8px 12px;
+        }
+      }
+
+    }
+
+
+
+  }
+
+  .multi {
+    min-height: 56px;
+    height: auto !important;
+
+    :global {
+
+      .s-contact__control,
+      .s-contact__value-container {
+        min-height: 56px;
+        height: auto !important;
+      }
+
+      .s-contact__multi-value {
+        margin: 4px;
+        padding-left: 10px;
+        cursor: default;
+        border-radius: 3px;
+        display: flex;
+        height: 30px;
+        line-height: 30px;
+        font-weight: 500;
+        background: $dark-gray;
+        position: relative;
+        white-space: nowrap;
+        overflow: hidden;
+
+      }
+
+      .s-contact__multi-value__label {
+        color: $white;
+        padding: 0;
+      }
+
+      .s-contact__multi-value__remove {
+        cursor: pointer;
+        color: $white !important;
+        padding-left: 6px;
+        padding-right: 6px;
+
+        &:hover {
+          background: transparent;
+        }
+      }
+    }
+  }
+
+
+  &.active .field.select {
+    :global {
+      // .s-contact__value-container {
+      //   padding-top: 15px;
+      // }
+
+      // .s-contact__placeholder {
+      //   margin-top: 7px;
+      //   color: $gray-40;
+      // }
+    }
+
+  }
+
+}
+
+.multiContainer {
+  height: auto !important;
+  min-height: 56px + 2px;
+
+  &.active .field.select {
+    :global {
+      // .s-contact__value-container {
+      //   padding-top: 25px;
+      // }
+    }
+  }
+}
+
+.addButton {
+  position: absolute;
+  right: 16px;
+  top: 10px;
+  margin: 0;
+  padding: 0 16px;
+  min-width: 0;
+  height: 38px;
+  min-height: 38px;
+  line-height: 38px;
+}
+
+.linkList {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  padding-top: 0;
+}
+
+.link {
+  padding: 8px;
+  font-size: 14px;
+  margin-right: 8px;
+  border-radius: 4px;
+  // background-color: $gray-40;
+  // margin: 4px;
+  display: flex;
+  overflow: hidden;
+
+  .remove {
+    margin-left: auto;
+    padding: 0 4px;
+    display: none;
+    flex-shrink: 0;
+  }
+
+  a {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  a:link,
+  a:visited {
+    color: $blue;
+  }
+
+  &:hover {
+    background-color: $gray-5;
+
+    .remove {
+      display: block;
+      cursor: pointer;
+
+      &:hover {
+        color: $blue;
+        text-decoration: underline;
+      }
+    }
+
+    a {
+      color: $darkblue;
+    }
+  }
+}
+
+// HTML EDITOR
+
+
+.htmlTextArea {
+
+  position: relative;
+  width: 100%;
+  background: none;
+  box-sizing: border-box;
+  font-size: 16px;
+  line-height: 22px;
+  padding: 16px;
+  vertical-align: top;
+  transition: 0.3s background-color ease-in-out, 0.3s box-shadow ease-in-out,
+    0.1s padding ease-in-out;
+}
+
+// .htmlEditor {
+//   height: 100%;
+// }
+
+.htmlContainer {
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 4px;
+  position: relative;
+  background-color: $white;
+  transition: 0.3s background-color $cubic, 0.3s box-shadow $cubic;
+  border: 1px solid $gray-20;
+
+  :global {
+    .public-DraftEditorPlaceholder-root {
+      position: absolute;
+      color: $darkblue;
+    }
+  }
+
+
+  .htmlTextArea+.label {
+    position: absolute;
+    top: 24px;
+    left: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 24px;
+    color: $white;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.1s all ease-in-out;
+  }
+
+
+  &.active {
+    .htmlTextArea {
+      padding: 24px 16px 8px 16px;
+    }
+
+    .htmlTextArea+.label {
+      top: 4px;
+      opacity: 1;
+      color: $darkblue;
+    }
+
+
+
+
+  }
+
+
+  .htmlTextArea+.label.error {
+    color: $strongred;
+  }
+
+
+}

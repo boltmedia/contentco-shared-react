@@ -1,0 +1,341 @@
+@import "src/styles/variables";
+
+
+.newContainer {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+  position: relative;
+  background-color: $white;
+  transition: 0.3s background-color $cubic, 0.3s box-shadow $cubic;
+  border: 1px solid $gray-20;
+  position: relative;
+  height: 58px;
+
+
+  .label {
+    position: absolute;
+    top: 24px;
+    left: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 24px;
+    color: $white;
+    opacity: 0;
+    padding: 0;
+    pointer-events: none;
+    transition: 0.1s all ease-in-out;
+  }
+
+  .placeholder {
+    box-sizing: border-box;
+    width: 100%;
+    height: 56px;
+    position: relative;
+    display: flex;
+    padding: 0px 16px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: normal;
+    background-color: transparent;
+    color: $darkblue-alt;
+    outline: none;
+    box-shadow: 0px 4px 20px 0px transparent;
+    transition: 0.3s background-color ease-in-out, 0.3s box-shadow ease-in-out,
+      0.1s padding ease-in-out;
+    -webkit-appearance: none;
+    line-height: 56px;
+    align-items: center;
+  }
+
+  .browse {
+    height: 24px;
+    line-height: 24px;
+    background-color: $gray-60;
+    border-radius: 6px;
+    color: $white;
+    padding: 4px 8px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-left: auto;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $gray-80;
+    }
+  }
+
+
+  .file {
+    // padding: 24px 16px 8px 16px;
+    // margin: 4px;
+    // background-color: $gray-60;
+    border-radius: 8px;
+    // padding: 0 8px;
+    // display: flex;
+    transition: 0.3s opacity $cubic, 0.3s height $cubic;
+    opacity: 0;
+    height: 0;
+    // display: none;
+    overflow: hidden;
+
+    .fileName {
+      // color: $white;
+      color: $black;
+      width: calc(100% - 30px);
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      // font-size: 13px;
+      font-size: 16px;
+      line-height: 24px;
+      // font-weight: 500;
+      // padding: 8px;
+    }
+
+    .fileRemove {
+      // color: $white;
+      color: $gray-80;
+      height: 30px;
+      width: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-left: auto;
+      position: absolute;
+      top: 50%;
+      right: 8px;
+      margin-top: -15px;
+      cursor: pointer;
+
+      &:hover {
+        color: $strongred;
+
+        .removeCross {
+          border-color: $strongred;
+        }
+      }
+    }
+
+    .removeCross {
+      // background-color: $gray-80;
+      height: 24px;
+      width: 24px;
+      border-radius: 24px;
+      display: flex;
+      border: 2px solid transparent;
+      justify-content: center;
+      align-items: center;
+      transition: 0.3s border $cubic;
+      cursor: pointer;
+    }
+
+
+
+
+
+
+  }
+
+
+  &.hasFile {
+    .drop {}
+
+    .file {
+      padding: 24px 16px 8px 16px;
+      // display: flex;
+      opacity: 1;
+      height: inherit;
+    }
+
+    .label {
+      opacity: 1;
+      color: $darkblue;
+      top: 4px;
+      // left: 0;
+
+    }
+
+    .placeholder {
+      display: none;
+      padding: 24px 16px 8px 16px;
+    }
+  }
+
+
+  &.multi {
+    height: inherit;
+
+    .file {
+      padding: 8px 16px;
+      display: flex;
+    }
+
+    .fileRemove {
+      position: initial;
+      top: auto;
+      right: auto;
+      margin: 0;
+      height: 24px;
+    }
+
+    .placeholder {
+      display: flex;
+    }
+
+    .fileList {
+      overflow: scroll;
+      max-height: 150px;
+    }
+  }
+
+
+}
+
+
+.single.container {
+  :global {
+    .filepond--root {
+      // min-height: 64px;
+      max-height: 142px;
+      min-height: 42px;
+    }
+
+    .filepond--list-scroller {
+      margin-top: 1em;
+    }
+  }
+}
+
+.container {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  // height: 56px;
+  border-radius: 4px;
+  position: relative;
+  // background-color: $gray-5;
+  background-color: $white;
+  transition: 0.3s background-color $cubic, 0.3s box-shadow $cubic;
+  // box-shadow: $basic-shadow;
+  border: 1px solid $gray-20;
+
+  .label {
+    padding-left: 16px;
+    padding-top: 4px;
+    color: $darkblue;
+    font-size: 12px;
+    line-height: 24px;
+    font-weight: 600;
+    z-index: $z-label;
+    transition: 0.1s all ease-in-out;
+  }
+
+  .label.error {
+    color: $strongred;
+  }
+
+  :global {
+    .filepond--wrapper {
+      margin-top: -16px;
+    }
+
+    .filepond--file {
+      border-radius: 4px;
+    }
+
+    .filepond--root {
+      // min-height: 64px;
+      min-height: 42px;
+      max-height: 400px;
+      // padding-bottom: 16px;
+      margin-bottom: 0;
+      // main component
+      transition: 0s all ease-in-out;
+      will-change: height;
+
+    }
+
+    .filepond--panel-root {
+      background-color: transparent;
+    }
+
+    .filepond--drop-label {
+      // background-color: $dark-gray;
+      // width: 60px;
+      left: unset;
+      right: unset;
+      padding: 0 16px;
+      text-align: left;
+      min-height: 42px;
+      vertical-align: top;
+      padding-top: 8px;
+
+      // left: unset !important;
+      // right: 0px;
+      // border-radius: 3px;
+      // min-height: 56px !important;
+      // color: red;
+      label {
+        padding: 0;
+        color: $gray-40;
+        font-size: 16px;
+        font-family: $cerebri;
+        // font-weight: 400;
+
+      }
+    }
+
+    .filepond--list-scroller {
+      // margin-top: 2.5em;
+    }
+
+    .filepond--list {
+      padding-top: 1em;
+      padding-bottom: 1em;
+    }
+
+    .filepond--hopper {
+      // margin-bottom: 8px;
+    }
+
+  }
+
+  .field {
+    box-sizing: border-box;
+    width: 100%;
+    height: 56px;
+    position: relative;
+    padding: 0px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: normal;
+    background-color: transparent;
+    color: $black;
+    outline: none;
+    box-shadow: 0px 4px 20px 0px transparent;
+    transition: 0.3s background-color ease-in-out, 0.3s box-shadow ease-in-out,
+      0.1s padding ease-in-out;
+    -webkit-appearance: none;
+  }
+
+}
+
+.addButton {
+  position: absolute;
+  right: 16px;
+  top: 9px;
+  margin: 0;
+  padding: 0 16px;
+  min-width: 0;
+  height: 36px;
+  min-height: 36px;
+  line-height: 36px;
+  border: 0;
+  z-index: $z-button;
+}
