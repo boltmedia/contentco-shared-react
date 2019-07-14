@@ -1,0 +1,29 @@
+{
+  "name": "contentco-shared-react",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "babel src -d build --copy-files",
+    "prepare": "yarn run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boltmedia/contentco-shared-react.git"
+  },
+  "author": "Content.co",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/boltmedia/contentco-shared-react/issues"
+  },
+  "homepage": "https://github.com/boltmedia/contentco-shared-react#readme",
+  "dependencies": {
+    "react": "^16.8.6"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1"
+  }
+}
