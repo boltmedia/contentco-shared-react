@@ -1,6 +1,7 @@
 .babelrc
 .eslintrc.json
 .eslintignore
-docs/
-spec/
 webpack.config.js
+.eslintrc
+.prettierrc
+src/

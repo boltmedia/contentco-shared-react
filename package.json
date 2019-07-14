@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "prepublish": "npm run build",
+    "prepare": "npm run build",
     "build": "babel src -d dist --copy-files",
     "format": "prettier --write \"src/**/*.{js,jsx,json,yml,md}\" \"*.{js,jsx,json,yml,md}\" .prettierrc",
     "dev": "webpack-dev-server"
