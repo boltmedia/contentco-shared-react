@@ -32,6 +32,7 @@
     "eslint": "^3.7.1",
     "eslint-config-standard": "^6.2.0",
     "eslint-config-standard-react": "^4.2.0",
+    "eslint-plugin-flowtype": "^3.11.1",
     "eslint-plugin-promise": "^2.0.1",
     "eslint-plugin-react": "^6.3.0",
     "eslint-plugin-standard": "^2.0.1",
@@ -51,6 +52,9 @@
     "react-dom": "^15.3.0 || ^16.0.0"
   },
   "dependencies": {
-    "classnames": "^2.2.6"
+    "classnames": "^2.2.6",
+    "draggabilly": "^2.2.0",
+    "imagesloaded": "^4.1.4",
+    "packery": "^2.1.2"
   }
 }
