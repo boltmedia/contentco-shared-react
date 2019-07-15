@@ -14,7 +14,6 @@ class PackeryComponent extends React.Component {
       draggable: props.draggable,
       draggiesArr: [],
       items: props.items,
-      screenWidth: window.innerWidth > 0 ? window.innerWidth : screen.width
     };
 
     // this.initializePackery = this.initializePackery.bind(this);
@@ -33,7 +32,7 @@ class PackeryComponent extends React.Component {
   componentWillReceiveProps(nextProps) {
     this.setState({ draggable: nextProps.draggable });
     this._timer = setTimeout(() => {
-      if (this.state.draggable && this.state.screenWidth > 600) {
+      if (this.state.draggable && window.innerWidth > 600) {
         this.packery.getItemElements().forEach(this.makeDraggable, this);
       } else {
         this.state.draggiesArr.forEach((draggie) => {
@@ -86,7 +85,7 @@ class PackeryComponent extends React.Component {
     if (
       !itemElem.classList.contains('dragged__item') &&
       this.state.draggable &&
-      this.state.screenWidth > 600
+      window.innerWidth > 600
     ) {
       itemElem.classList.add('dragged__item');
       const draggie = new Draggabilly(itemElem);
