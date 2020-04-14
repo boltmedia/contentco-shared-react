@@ -26,9 +26,14 @@
   transition: background-color .1s $cubic;
   will-change: background;
   word-wrap: break-word;
+  outline: none;
 
   &~& {
     margin-left: 10px;
+  }
+
+  @include ie-only { // apply these styles on ie only
+    height: 42px; // fix on flex child not centering vertically when no height is provided
   }
 }
 
@@ -90,10 +95,22 @@
 .blueOutline {
   color: $blue-100;
   border-color: $blue-100;
+  background: transparent;
 
   &:hover {
     border-color: $darkblue;
     color: $darkblue;
+  }
+}
+
+.redOutline {
+  color: $red;
+  border-color: $red;
+  background: transparent;
+
+  &:hover {
+    border-color: $strongred;
+    color: $strongred !important;
   }
 }
 

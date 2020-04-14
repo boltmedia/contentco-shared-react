@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Styles from './Input.module.scss';
 import classNames from 'classnames';
-import { authRequest } from '../../../shared/helpers/apis';
+import { authRequest } from '../../../helpers/apis';
 import Button, {
   buttonStyles,
   ButtonType,

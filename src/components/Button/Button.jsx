@@ -11,7 +11,8 @@ export const ButtonType = {
   GRAY: 'gray',
   WHITE: 'white',
   WHITE_BLUE_OUTLINE: 'white-blue-outline',
-  BLUE_OUTLINE: 'blue-outline'
+  BLUE_OUTLINE: 'blue-outline',
+  RED_OUTLINE: 'red-outline'
 };
 
 export const ButtonSize = {
@@ -39,7 +40,8 @@ const Button = (props) => {
     darkblue: styles.darkblue,
     white: styles.white,
     'white-blue-outline': styles.whiteBlueoutline,
-    'blue-outline': styles.blueOutline
+    'blue-outline': styles.blueOutline,
+    'red-outline': styles.redOutline
   };
 
   const buttonSizeClasses = {
@@ -72,7 +74,6 @@ Button.propTypes = {
   children: PropTypes.node,
   content: PropTypes.string,
   className: PropTypes.string,
-  restProps: PropTypes.object,
   disabled: PropTypes.bool
 };
 
