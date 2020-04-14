@@ -96,6 +96,11 @@
     height: inherit;
   }
 
+  &.containerMultiLink {
+    display: flex;
+    flex-direction: column;
+  }
+
   .field.textArea {
     min-height: 112px;
 
@@ -228,7 +233,7 @@
 
       .s-contact__single-value {
         transform: none;
-        line-height: 1;
+        line-height: 1.1;
         padding-bottom: 2px;
 
       }
@@ -323,16 +328,25 @@
   }
 }
 
-.addButton {
-  position: absolute;
-  right: 16px;
-  top: 10px;
-  margin: 0;
-  padding: 0 16px;
-  min-width: 0;
-  height: 38px;
-  min-height: 38px;
-  line-height: 38px;
+.containerMultiLink {
+  .addButton {
+    position: absolute;
+    right: 16px;
+    top: 10px;
+    margin: 0;
+    padding: 0 16px;
+    min-width: 0;
+    height: 38px;
+    min-height: 38px;
+    line-height: 38px;
+
+    &:disabled {
+      opacity: .5;
+      cursor: default;
+      pointer-events: none;
+    }
+  }
+
 }
 
 .linkList {
@@ -343,9 +357,8 @@
 }
 
 .link {
-  padding: 8px;
+  padding: 5px 8px;
   font-size: 14px;
-  margin-right: 8px;
   border-radius: 4px;
   // background-color: $gray-40;
   // margin: 4px;
@@ -393,17 +406,21 @@
 
 
 .htmlTextArea {
-
+  // z-index: $z-background;
   position: relative;
   width: 100%;
   background: none;
   box-sizing: border-box;
   font-size: 16px;
   line-height: 22px;
-  padding: 16px;
+  padding: 14px 16px;
   vertical-align: top;
   transition: 0.3s background-color ease-in-out, 0.3s box-shadow ease-in-out,
     0.1s padding ease-in-out;
+
+  @include ie-only {
+    padding: 0;
+  }
 }
 
 // .htmlEditor {
@@ -424,6 +441,7 @@
       position: absolute;
       color: $darkblue;
     }
+
   }
 
 
@@ -443,13 +461,20 @@
 
   &.active {
     .htmlTextArea {
-      padding: 24px 16px 8px 16px;
+      padding: 22px 16px 6px 16px;
     }
 
     .htmlTextArea+.label {
       top: 4px;
       opacity: 1;
       color: $darkblue;
+    }
+
+    :global {
+      .public-DraftEditorPlaceholder-root {
+        color: $gray-40;
+      }
+
     }
 
 
@@ -464,3 +489,176 @@
 
 
 }
+
+$noLabelHeight: 47px;
+
+.select.noLabel {
+  height: $noLabelHeight;
+  // background: red;
+
+  :global(.s-contact__control) {
+    height: $noLabelHeight !important;
+  }
+
+  :global(.s-contact__value-container.s-contact__value-container--has-value) {
+    padding: 8px 16px;
+    height: $noLabelHeight;
+  }
+
+  :global(.s-contact__single-value) {
+    top: 0;
+    position: inherit;
+  }
+}
+
+.noLabelContainer {
+  height: $noLabelHeight !important;
+}
+
+.hideLabel {
+  display: none;
+}
+
+
+
+.dualContainer {
+  .dualInput {
+    flex-basis: 50%;
+    flex-grow: 1;
+
+    .field {
+      padding: 24px 8px 8px 16px;
+      width: 100%;
+    }
+  }
+
+  .dualSelect {
+    :global {
+      .s-contact__single-value {
+        position: initial;
+      }
+
+      .s-contact__indicators {
+        height: 100% !important;
+        align-items: flex-end;
+      }
+
+      .s-contact__indicator-separator {
+        display: none !important;
+      }
+
+      .s-contact__indicator {
+        padding: 12px 8px !important;
+      }
+
+      .s-contact__value-container {
+        padding: 12px 0 !important;
+        height: 100% !important;
+        position: relative;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+
+        div {
+          height: 100%;
+          line-height: normal !important;
+          margin: 0 !important;
+          width: 100%;
+        }
+
+        .s-contact__single-value {
+          height: 20px;
+          text-align: right;
+        }
+
+        & > div:last-child {
+          position: absolute;
+          top: 0;
+        }
+
+        .s-contact__input {
+          width: 100%;
+          display: flex !important;
+          align-items: flex-end !important;
+          justify-content: flex-end !important;
+          padding: 0 !important;
+
+          & > div {
+            display: none !important;
+          }
+
+          & > input {
+            width: 100% !important;
+            height: 20px !important;
+            margin: 0 0 12px 0!important;
+            position: static;
+            text-align: right;
+          }
+        }
+      }
+
+      .s-contact__menu {
+        min-width: 150px !important;
+        right: 0;
+      }
+
+    }
+
+  }
+
+  .dualInput+.label {
+    position: absolute;
+    top: 24px;
+    left: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 24px;
+    color: $white;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.1s all ease-in-out;
+    z-index: $z-base;
+  }
+
+  .dualInput+.label.error {
+    color: $strongred;
+  }
+
+
+  &.active {
+
+    .dualInput+.label {
+      top: 4px;
+      opacity: 1;
+      color: $darkblue;
+    }
+
+  }
+
+  &.shrink {
+    .dualInput {
+      flex-basis: 60% !important;
+    }
+
+    .dualSelect {
+      flex-basis: 40% !important;
+    }
+
+    .field {
+      padding-right: 0;
+    }
+
+    :global {
+      .s-contact__indicators {
+        display: none !important;
+      }
+      .s-contact__value-container {
+        padding-right: 10px !important;
+      }
+
+    }
+  }
+}
+
+
+

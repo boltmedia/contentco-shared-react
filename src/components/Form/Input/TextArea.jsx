@@ -4,120 +4,193 @@ import Styles from './Input.module.scss';
 import classNames from 'classnames';
 import TextareaAutosize from 'react-autosize-textarea';
 
-class TextArea extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      // active: (props.locked && props.active) || false,
-      active: props.active || false,
-      value: props.value || '',
-      error: props.error || '',
-      label: props.label || 'Label'
-    };
-  }
+const TextArea = (props) => {
+  const fieldClassName = classNames(
+    Styles.container,
+    Styles.containerArea,
+    props.placeholder && Styles.active,
+    ((props.locked ? props.active : props.active || props.value) ||
+      props.error) &&
+    Styles.active,
+    props.locked && !props.active && Styles.locked
+  );
 
-  static getDerivedStateFromProps(props, state) {
-    // This really shouldnt be used but I'm not aware of a better technique to update state from props
-    // console.log(props);
-    // console.log(state);
-    if (props.error !== state.error) {
-      state.error = props.error || '';
-    }
-    return state;
-  }
-
-  handleChange(event) {
-    // console.log('handleChange');
-    this.setState({
-      value: event.target.value,
-      error: ''
-    });
-
+  const handleChange = (event) => {
     // Pass any other change events from parent
     try {
-      this.props.onChange(event);
+      props.onChange(event);
     } catch (err) {
       return;
     }
-  }
+  };
 
-  handleKeyPress(event) {
-    // For passing up keypresses + autoselect
-    // console.log('handleKeyPress');
-    if (event.which === 13) {
-      this.setState({ value: this.props.predicted });
-    }
-
+  const handleKeyPress = (event) => {
     try {
-      this.props.onKeyPress(event);
+      props.onKeyPress(event);
     } catch (err) {
       return;
     }
-  }
+  };
 
-  handleFocus(event) {
-    if (this.props.locked) {
-      this.stateState({ active: true });
-    }
+  const handleFocus = (event) => {
+    // if (props.locked) {
+    //   this.stateState({ active: true });
+    // }
     try {
-      this.props.onFocus(event);
+      props.onFocus(event);
     } catch (err) {
       return;
     }
-  }
+  };
 
-  handleBlur(event) {
-    if (this.props.locked) {
-      this.stateState({ active: false });
-    }
+  const handleBlur = (event) => {
+    // if (props.locked) {
+    //   this.stateState({ active: false });
+    // }
     try {
-      this.props.onBlur(event);
+      props.onBlur(event);
     } catch (err) {
       return;
     }
-  }
+  };
 
-  render() {
-    const { active, value, label } = this.state;
-    const { predicted, locked, name, required } = this.props;
+  return (
+    <div className={fieldClassName}>
+      <TextareaAutosize
+        className={classNames(Styles.field, Styles.textArea)}
+        id={props.name}
+        name={props.name}
+        value={props.value}
+        placeholder={props.placeholder || props.label}
+        required={props.required}
+        onChange={handleChange}
+        onKeyPress={handleKeyPress}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+      />
+      <label
+        htmlFor={props.name}
+        className={classNames(Styles.label, props.error && Styles.error)}>
+        {props.error || props.label}
+      </label>
+    </div>
+  );
+};
 
-    const fieldClassName = classNames(
-      Styles.container,
-      Styles.containerArea,
-      ((locked ? active : active || value) || this.state.error) &&
-        Styles.active,
-      locked && !active && Styles.locked
-    );
-    // console.log('error', this.state.error);
-    return (
-      <div className={fieldClassName}>
-        {active && value && predicted && predicted.includes(value) && (
-          <p className={Styles.predicted}>{predicted}</p>
-        )}
-        <TextareaAutosize
-          className={classNames(Styles.field, Styles.textArea)}
-          id={name}
-          name={name}
-          value={value}
-          placeholder={this.props.placeholder || this.props.label}
-          required={required}
-          onChange={this.handleChange.bind(this)}
-          onKeyPress={this.handleKeyPress.bind(this)}
-          onFocus={this.handleFocus.bind(this)}
-          onBlur={this.handleBlur.bind(this)}
-        />
-        <label
-          htmlFor={name}
-          className={classNames(
-            Styles.label,
-            this.state.error && Styles.error
-          )}>
-          {this.state.error || this.props.label}
-        </label>
-      </div>
-    );
-  }
-}
+// class TextArea extends React.Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       // active: (props.locked && props.active) || false,
+//       active: props.active || false,
+//       value: props.value || '',
+//       error: props.error || '',
+//       label: props.label || 'Label'
+//     };
+//   }
+
+//   static getDerivedStateFromProps(props, state) {
+//     // This really shouldnt be used but I'm not aware of a better technique to update state from props
+//     // console.log(props);
+//     // console.log(state);
+//     if (props.error !== state.error) {
+//       state.error = props.error || '';
+//     }
+//     return state;
+//   }
+
+//   handleChange(event) {
+//     // console.log('handleChange');
+//     this.setState({
+//       value: event.target.value,
+//       error: ''
+//     });
+
+//     // Pass any other change events from parent
+//     try {
+//       this.props.onChange(event);
+//     } catch (err) {
+//       return;
+//     }
+//   }
+
+//   handleKeyPress(event) {
+//     // For passing up keypresses + autoselect
+//     // console.log('handleKeyPress');
+//     if (event.which === 13) {
+//       this.setState({ value: this.props.predicted });
+//     }
+
+//     try {
+//       this.props.onKeyPress(event);
+//     } catch (err) {
+//       return;
+//     }
+//   }
+
+//   handleFocus(event) {
+//     if (this.props.locked) {
+//       this.stateState({ active: true });
+//     }
+//     try {
+//       this.props.onFocus(event);
+//     } catch (err) {
+//       return;
+//     }
+//   }
+
+//   handleBlur(event) {
+//     if (this.props.locked) {
+//       this.stateState({ active: false });
+//     }
+//     try {
+//       this.props.onBlur(event);
+//     } catch (err) {
+//       return;
+//     }
+//   }
+
+//   render() {
+//     const { active, value, label } = this.state;
+//     const { predicted, locked, name, required } = this.props;
+
+//     const fieldClassName = classNames(
+//       Styles.container,
+//       Styles.containerArea,
+//       ((locked ? active : active || value) || this.state.error) &&
+//       Styles.active,
+//       locked && !active && Styles.locked
+//     );
+//     // console.log('error', this.state.error);
+//     return (
+//       <div className={fieldClassName}>
+//         {active && value && predicted && predicted.includes(value) && (
+//           <p className={Styles.predicted}>{predicted}</p>
+//         )}
+//         <TextareaAutosize
+//           className={classNames(Styles.field, Styles.textArea)}
+//           id={name}
+//           name={name}
+//           value={value}
+//           placeholder={this.props.placeholder || this.props.label}
+//           required={required}
+//           onChange={this.handleChange.bind(this)}
+//           onKeyPress={this.handleKeyPress.bind(this)}
+//           onFocus={this.handleFocus.bind(this)}
+//           onBlur={this.handleBlur.bind(this)}
+//         />
+//         <label
+//           htmlFor={name}
+//           className={classNames(
+//             Styles.label,
+//             this.state.error && Styles.error
+//           )}>
+//           {this.state.error || this.props.label}
+//         </label>
+//       </div>
+//     );
+//   }
+// }
 
 TextArea.propTypes = {
   name: PropTypes.string.isRequired,

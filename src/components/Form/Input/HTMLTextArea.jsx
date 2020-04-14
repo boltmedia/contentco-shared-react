@@ -45,6 +45,15 @@ class HTMLTextArea extends React.Component {
     }
   }
 
+  static getDerivedStateFromProps(props, state) {
+    // This really shouldnt be used but I'm not aware of a better technique to update state from props
+    if (props.error !== state.error) {
+      state.error = props.error || '';
+    }
+
+    return state;
+  }
+
   handleEditorStateChange = (editorState) => {
     this.setState({
       editorState
@@ -69,8 +78,8 @@ class HTMLTextArea extends React.Component {
 
     const fieldClassName = classNames(
       Styles.htmlContainer,
-      ((locked ? active : active || (value.length > 8)) || error) &&
-      Styles.active,
+      ((locked ? active : active || value.length > 8) || error) &&
+        Styles.active,
       locked && !active && Styles.locked
     );
     return (
@@ -93,7 +102,6 @@ class HTMLTextArea extends React.Component {
           )}>
           {this.state.error || this.props.label}
         </label>
-
       </div>
     );
   }

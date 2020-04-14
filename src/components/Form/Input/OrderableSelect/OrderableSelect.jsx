@@ -1,19 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import Styles from './Input.module.scss';
+import Styles from '../Input.module.scss';
 import classNames from 'classnames';
-import Select from 'react-select';
+import Select, { components } from 'react-select';
 import AsyncSelect from 'react-select/async';
 import AsyncPaginate from 'react-select-async-paginate';
 import CreatableSelect from 'react-select/creatable';
+import { set } from 'lodash';
 
-class SelectInput extends React.Component {
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+
+import OrderableMultiValue from './components/OrderableMultiValue';
+import { orderDragged } from './helpers';
+
+class SortableSelect extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       // active: (props.locked && props.active) || false,
       active: props.active || false,
-      value: props.value || '',
+      value: props.value.map((o, i) => set(o, 'index', i)) || '',
       error: props.error || '',
       label: props.label || 'Label',
       hasValue: false
@@ -37,10 +44,7 @@ class SelectInput extends React.Component {
       if (props.value.length > 0 || Object.keys(props.value).length > 0) {
         state.hasValue = true;
       }
-    } else {
-      state.hasValue = false;
     }
-
     return state;
   }
 
@@ -92,7 +96,7 @@ class SelectInput extends React.Component {
 
     // Pass any other change events from parent
     try {
-      this.props.onChange({ ...event, target: { name, value: event }, action });
+      this.props.onChange({ ...event, target: { name, value: event } });
     } catch (err) {
       console.error(err);
       // pass
@@ -100,7 +104,7 @@ class SelectInput extends React.Component {
   };
 
   handleKeyPress = (event) => {
-    // For passing up keypresses + autoselectInput
+    // For passing up keypresses + autoSortableSelect
     // console.log('handleKeyPress');
     if (event.which === 13) {
       this.setState({ value: this.props.predicted });
@@ -135,49 +139,38 @@ class SelectInput extends React.Component {
     }
   };
 
+  moveDraggedOption = (dragIndex, hoverIndex) => {
+    const initialList = this.state.value;
+    if (hoverIndex >= initialList.length) {
+      let k = hoverIndex - initialList.length + 1;
+      while (k--) {
+        initialList.push(undefined);
+      }
+    }
+    initialList.splice(hoverIndex, 0, initialList.splice(dragIndex, 1)[0]);
+    // initialList.map((o, i) => set(o, 'index', i))
+    this.setState((state) => ((state.value = initialList), state));
+  };
+
   render() {
     const { active, value, label } = this.state;
-    const { predicted, locked, name, required, className } = this.props;
+    const { predicted, locked, name, required } = this.props;
 
     const fieldClassName = classNames(
       Styles.container,
-      className,
       ((locked ? active : active || value.length) || this.state.error) &&
         Styles.active,
       locked && !active && Styles.locked,
-      this.props.isMulti ? Styles.multiContainer : '',
-      this.props.noLabel ? Styles.noLabelContainer : ''
+      this.props.isMulti ? Styles.multiContainer : ''
     );
 
     const customStyles = {
-      option: (provided, state) => ({
-        ...provided
-        // borderColor: 'blue',
-        // color: state.isSelected ? 'white' : 'black'
-      }),
-      input: (styles) => ({
-        ...styles
-        // borderColor: 'red',
-      }),
       menu: (styles) => ({
         ...styles,
-        // fontSize: '14px',
-        // color: '#a1aab3',
         margin: '2px 0'
-        // borderColor: 'green',
-      }),
-      placeholder: (styles) => ({
-        ...styles
-        // fontSize: '14px',
-        // color: '#a1aab3',
-        // marginLeft: '0'
-        // borderColor: 'green',
       }),
       control: (styles) => ({
         ...styles,
-        // borderRadius: '3px',
-        // minHeight: '42px',
-        // borderColor: '#a1aab3',
         boxShadow: 'none',
         ':hover': {
           borderColor: '#a1aab3'
@@ -192,6 +185,11 @@ class SelectInput extends React.Component {
         ...styles,
         marginLeft: '0',
         fontSize: '16px'
+      }),
+      multiValue: (styles, { isDragging }) => ({
+        ...styles,
+        margin: '0',
+        opacity: isDragging ? 0.5 : null
       })
     };
 
@@ -216,13 +214,11 @@ class SelectInput extends React.Component {
         {active && value && predicted && predicted.includes(value) && (
           <p className={Styles.predicted}>{predicted}</p>
         )}
-
         <CustomSelect
           className={classNames(
             Styles.select,
             Styles.field,
-            this.props.isMulti ? Styles.multi : '',
-            this.props.noLabel ? Styles.noLabel : ''
+            this.props.isMulti ? Styles.multi : ''
           )}
           classNamePrefix="s-contact"
           name={name}
@@ -231,12 +227,11 @@ class SelectInput extends React.Component {
           placeholder={label}
           selectValue={value}
           defaultValue={value}
-          value={value}
+          value={value && value.map((o, i) => set(o, 'index', i))}
           required={required}
           isClearable={this.props.isClearable}
           getOptionLabel={this.props.getOptionLabel}
           getOptionValue={this.props.getOptionValue}
-          valueRenderer={this.props.valueRenderer}
           options={this.props.options}
           onChange={this.handleChange}
           isMulti={this.props.isMulti}
@@ -245,19 +240,16 @@ class SelectInput extends React.Component {
           additional={{ page: 1 }}
           SelectComponent={SelectComponent}
           onCreateOption={this.props.onCreateOption}
-          loadingMessage={this.props.loadingMessage}
-          noOptionsMessage={this.props.noOptionsMessage}
-          filterOption={this.props.filterOption}
           createOptionPosition={'first'}
+          components={{ MultiValue: OrderableMultiValue }}
+          moveDraggedOption={this.moveDraggedOption}
         />
-
         <label
           htmlFor={name}
           className={classNames(
             Styles.label,
             this.state.error && Styles.error,
-            this.state.hasValue && Styles.hasValue,
-            this.props.noLabel && Styles.hideLabel
+            this.state.hasValue && Styles.hasValue
           )}>
           {this.state.error || label}
         </label>
@@ -266,10 +258,9 @@ class SelectInput extends React.Component {
   }
 }
 
-SelectInput.propTypes = {
+SortableSelect.propTypes = {
   name: PropTypes.string.isRequired,
   menuPlacement: PropTypes.string,
-  className: PropTypes.string,
   options: PropTypes.array,
   locked: PropTypes.bool,
   active: PropTypes.bool,
@@ -280,8 +271,7 @@ SelectInput.propTypes = {
   value: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.array,
-    PropTypes.object,
-    PropTypes.number
+    PropTypes.object
   ]),
   label: PropTypes.string,
   onChange: PropTypes.func,
@@ -289,22 +279,17 @@ SelectInput.propTypes = {
   onBlur: PropTypes.func,
   getOptionLabel: PropTypes.func,
   getOptionValue: PropTypes.func,
-  valueRenderer: PropTypes.func,
   onFocus: PropTypes.func,
   isAsync: PropTypes.bool,
   isPaginated: PropTypes.bool,
+  isCreatable: PropTypes.bool,
   loadOptions: PropTypes.func,
-  onInputChange: PropTypes.func,
-  noLabel: PropTypes.bool,
-  loadingMessage: PropTypes.func,
-  noOptionsMessage: PropTypes.func,
-  filterOption: PropTypes.func
+  onInputChange: PropTypes.func
 };
 
-SelectInput.defaultProps = {
+SortableSelect.defaultProps = {
   isAsync: false,
   isPaginated: false,
-  noLabel: false
+  isCreatable: false
 };
-
-export default SelectInput;
+export default DragDropContext(HTML5Backend)(SortableSelect);

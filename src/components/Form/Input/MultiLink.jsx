@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Styles from './Input.module.scss';
 import classNames from 'classnames';
-import { request } from '../../../helpers/apis';
+import { authRequest } from '../../../shared/helpers/apis';
 import Button, {
   buttonStyles,
   ButtonType,
@@ -16,7 +16,7 @@ class MultiLink extends React.Component {
     this.state = {
       // active: (props.locked && props.active) || false,
       // active: props.active || props.links.length ? true : false || false,
-      active: true,
+      active: props.active || false,
       loading: false,
       links: props.links || [],
       value: props.value || '',
@@ -34,9 +34,9 @@ class MultiLink extends React.Component {
     if (
       value &&
       !re.test(value) &&
-      (prefix.indexOf(value) !== 0 &&
-        httpPrefix.indexOf(value) !== 0 &&
-        httpsPrefix.indexOf(value) !== 0)
+      prefix.indexOf(value) !== 0 &&
+      httpPrefix.indexOf(value) !== 0 &&
+      httpsPrefix.indexOf(value) !== 0
     ) {
       return prefix + value;
     }
@@ -75,7 +75,7 @@ class MultiLink extends React.Component {
       }
     };
 
-    request
+    authRequest
       .post(url, payload, config)
       .then((response) => {
         const links = this.state.links;
@@ -106,7 +106,7 @@ class MultiLink extends React.Component {
       }
     };
 
-    request
+    authRequest
       .delete(url, config)
       .then((response) => {
         const links = this.state.links;
@@ -165,8 +165,9 @@ class MultiLink extends React.Component {
     const fieldClassName = classNames(
       Styles.container,
       Styles.containerArea,
+      Styles.containerMultiLink,
       ((locked ? active : active || value) || this.state.error) &&
-      Styles.active,
+        Styles.active,
       locked && !active && Styles.locked
     );
     // console.log('error', this.state.error);
@@ -215,11 +216,12 @@ class MultiLink extends React.Component {
         <Button
           className={Styles.addButton}
           type={ButtonType.BLUE}
-          onClick={this.handleUrlCreate}>
+          onClick={this.handleUrlCreate}
+          disabled={!value}>
           {(this.state.loading && (
             <Loader color={Loader.color.WHITE} size={Loader.size.SMALL} />
           )) ||
-            `Add`}
+            `Add Link`}
         </Button>
         {this.state.links && this.state.links.length > 0 && (
           <div className={Styles.linkList}>{linkList}</div>

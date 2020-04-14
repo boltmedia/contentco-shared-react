@@ -8,20 +8,18 @@ import moment from 'moment';
 import 'react-datetime/css/react-datetime.css'; // for ES6 modules
 import MaskedInput from 'react-text-mask';
 
-class DateInput extends React.Component {
+class DateSelector extends React.Component {
   constructor(props) {
     super(props);
-    // serialize
     this.state = {
       // active: (props.locked && props.active) || false,
       active: props.active || false,
-      month: props.month || '',
-      year: props.year || '',
-      value: this.serialize(props.month, props.year),
+      value: moment(props.value) || '',
       error: props.error || '',
       validError: null,
       required: props.required || false,
-      label: props.label || 'Label'
+      label: props.label || 'Label',
+      min: null
     };
   }
 
@@ -29,38 +27,19 @@ class DateInput extends React.Component {
     if (props.error !== state.error) {
       state.error = props.error || '';
     }
-    // if (props.value !== state.value) {
-    //   state.value = props.value || '';
-    // }
+
+    if (props.value !== state.value) {
+      state.value = moment(props.value) || '';
+    }
+
     return state;
   }
 
-  serialize = (month, year) => {
-    // from month/yr to js date (not moment..)
-    if (!month) return null;
-    if (!year) return null;
-    // From any inputs
-    // return new Date(year, month + 1, 0, 0, 0, 0, 0);
-    // Month stored is actual month # (1-12)
-    return moment()
-      .year(year)
-      .month(month - 1);
-  };
-
-  deserialize = (date) => {
-    if (!date) return { month: null, year: null };
-    // from moment date to month/yr
-    const month = date.month() + 1;
-    // Month computed is 0-11
-    const year = date.year();
-    return { month, year };
-  };
-
   handleChange = (momentDate) => {
     if (!momentDate) {
-      this.setState({ value: null, month: null, year: null }, () => {
+      this.setState({ value: null }, () => {
         try {
-          this.props.onChange(null, { month: null, year: null });
+          this.props.onChange(null);
         } catch (err) {
           console.error(err);
           return;
@@ -72,26 +51,14 @@ class DateInput extends React.Component {
     }
     // Set value, deserialize and send back
     const value = momentDate;
-    const { month, year } = this.deserialize(value);
-    this.setState({ value, month, year }, () => {
+    this.setState({ value }, () => {
       try {
-        this.props.onChange(value, { month, year });
+        this.props.onChange(value);
       } catch (err) {
         console.error(err);
         return;
       }
     });
-
-    // const stringVal = String(event.target.value);
-    // const month = parseInt(stringVal.substring(0, 2), 10);
-    // const year = parseInt(stringVal.substring(4, 9), 10);
-    // this.setState({ month, year }, () => {
-    //   try {
-    //     this.props.onChange(event, { month, year });
-    //   } catch (err) {
-    //     return;
-    //   }
-    // });
   };
 
   handleKeyPress = (event) => {
@@ -124,8 +91,6 @@ class DateInput extends React.Component {
       // Note that I'm using the onchange callback on blur as well
       try {
         this.props.onChange(event, {
-          month: this.state.month,
-          year: this.state.year,
           valid: !this.state.validError
         });
       } catch (err) {
@@ -133,20 +98,6 @@ class DateInput extends React.Component {
       }
       return;
     };
-
-    // Doing this validation here just because I think this is the only case we use this component
-    if (
-      this.state.required &&
-      (isNaN(this.state.month) || isNaN(this.state.year))
-    ) {
-      this.setState({ validError: 'Enter a date' }, callback);
-    } else if (this.state.year < 1900 || this.state.year > 2030) {
-      this.setState({ validError: 'Enter a valid year' }, callback);
-    } else if (this.state.month > 12) {
-      this.setState({ validError: 'Enter a valid month' }, callback);
-    } else {
-      this.setState({ validError: null }, callback);
-    }
   };
 
   beforeMaskedValueChange = (newState, oldState, userInput) => {
@@ -160,36 +111,50 @@ class DateInput extends React.Component {
   };
 
   render() {
-    const { active, month, year, label } = this.state;
-    const { locked, name, required } = this.props;
+    const { active, label, value } = this.state;
+    const { locked, name, required, placeholder } = this.props;
 
     const fieldClassName = classNames(
       Styles.container,
-      ((locked ? active : active || month || year) ||
+      placeholder && Styles.active,
+      ((locked ? active : active || value) ||
         this.state.error ||
         this.state.validError ||
         locked) &&
-        Styles.active,
+      Styles.active,
       locked && !active && Styles.locked
     );
     // console.log('error', this.state.error);
     return (
       <div className={fieldClassName}>
         <Datetime
-          dateFormat="MM/YYYY"
+          dateFormat="DD/MM/YYYY"
           inputProps={{
             className: Styles.field,
-            placeholder: label
+            placeholder: placeholder || label
           }}
+          closeOnSelect={true}
           strictParsing
           value={this.state.value}
           onChange={this.handleChange}
-          timeFormat={false}
+          timeFormat={this.props.showTime}
+          isValidDate={this.props.isValidDate}
           renderInput={(props, openCalendar, closeCalendar) => {
             return (
               <React.Fragment>
                 <MaskedInput
-                  mask={[/[0-1]/, /\d/, '/', /[1-2]/, /\d/, /\d/, /\d/]}
+                  mask={[
+                    /[0-9]/,
+                    /\d/,
+                    '/',
+                    /\d/,
+                    /\d/,
+                    '/',
+                    /\d/,
+                    /\d/,
+                    /\d/,
+                    /\d/
+                  ]}
                   keepCharPositions
                   {...props}
                 />
@@ -205,43 +170,23 @@ class DateInput extends React.Component {
             );
           }}
         />
-
-        {/*<InputMask
-          className={Styles.field}
-          id={name}
-          name={name}
-          mask="99 / 9999"
-          maskChar={'_'}
-          type={this.props.type}
-          step={this.props.step}
-          max={this.props.max}
-          placeholder={label}
-          value={
-            (this.state.month || this.state.year) &&
-            `${this.state.month} / ${this.state.year}`
-          }
-          required={required}
-          onChange={this.handleChange}
-          onKeyPress={this.handleKeyPress}
-          onFocus={this.handleFocus}
-          onBlur={this.handleBlur}
-          beforeMaskedValueChange={this.beforeMaskedValueChange}
-        />*/}
       </div>
     );
   }
 }
 
-DateInput.propTypes = {
+DateSelector.propTypes = {
   name: PropTypes.string.isRequired,
   locked: PropTypes.bool,
   active: PropTypes.bool,
+  placeholder: PropTypes.string,
   error: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.bool,
     PropTypes.func
   ]),
   required: PropTypes.bool,
+  showTime: PropTypes.bool,
   value: PropTypes.string,
   step: PropTypes.string,
   type: PropTypes.string,
@@ -249,13 +194,16 @@ DateInput.propTypes = {
   onChange: PropTypes.func,
   onKeyPress: PropTypes.func,
   onBlur: PropTypes.func,
-  onFocus: PropTypes.func
+  onFocus: PropTypes.func,
+  min: PropTypes.number,
+  isValidDate: PropTypes.func
 };
 
-DateInput.defaultProps = {
+DateSelector.defaultProps = {
   type: 'text',
   step: null,
-  max: null
+  max: null,
+  showTime: false
 };
 
-export default DateInput;
+export default DateSelector;

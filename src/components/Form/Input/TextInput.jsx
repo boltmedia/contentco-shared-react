@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import InputMask from 'react-input-mask';
 import Styles from './Input.module.scss';
 import classNames from 'classnames';
 
@@ -7,7 +8,6 @@ class TextInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // active: (props.locked && props.active) || false,
       active: props.active || false,
       value: props.value || '',
       error: props.error || '',
@@ -16,10 +16,6 @@ class TextInput extends React.Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    // This really shouldnt be used but I'm not aware of a better technique to update state from props
-    // console.log('getDerivedStateFromProps');
-    // console.log(props);
-    // console.log(state);
     if (props.error !== state.error) {
       state.error = props.error || '';
     }
@@ -30,12 +26,50 @@ class TextInput extends React.Component {
     return state;
   }
 
-  handleChange = (event) => {
-    this.setState({
-      value: event.target.value,
-      error: ''
-    });
+  invalidate = (event) => {
+    if (this.props.type === 'number') {
+      const nValue = parseFloat(event.target.value);
+      if (!!this.props.max && nValue > parseFloat(this.props.max)) {
+        const oValue = parseFloat(this.state.value);
+        this.setState({ value: oValue });
+        event.target.value = oValue;
+      }
 
+      if (
+        !!this.props.maxLength &&
+        (nValue || '').toString().length > parseFloat(this.props.maxLength)
+      ) {
+        const oValue = parseFloat(this.state.value);
+        this.setState({ value: oValue });
+        event.target.value = oValue;
+      }
+    }
+    return event;
+  };
+
+  handleChange = (event) => {
+    // THIS IS NOT WORKING YET..!
+
+    let valid = true;
+    const { invalidate } = this;
+    event = invalidate(event);
+
+    // if (this.props.pattern && event.target.value) {
+    //   const reg = new RegExp(this.props.pattern, "gi");
+    //   valid = reg.test(String(event.target.value));
+    // }
+
+    if (valid) {
+      this.setState({
+        value: event.target.value,
+        error: ''
+      });
+    } else {
+      this.setState({
+        value: event.target.value,
+        error: 'Not a valid URL'
+      });
+    }
     // Pass any other change events from parent
     try {
       this.props.onChange(event);
@@ -82,12 +116,13 @@ class TextInput extends React.Component {
 
   render() {
     const { active, value, label } = this.state;
-    const { predicted, locked, name, required } = this.props;
+    const { predicted, locked, name, required, id, placeholder } = this.props;
 
     const fieldClassName = classNames(
+      this.props.className,
       Styles.container,
-      ((locked ? active : active || value) || this.state.error || locked) &&
-        Styles.active,
+      placeholder && Styles.active,
+      ((locked ? active : active || value) || this.state.error || locked) && Styles.active,
       locked && !active && Styles.locked
     );
     // console.log('error', this.state.error);
@@ -96,21 +131,45 @@ class TextInput extends React.Component {
         {active && value && predicted && predicted.includes(value) && (
           <p className={Styles.predicted}>{predicted}</p>
         )}
-        <input
-          className={Styles.field}
-          id={name}
-          name={name}
-          type={this.props.type}
-          step={this.props.step}
-          max={this.props.max}
-          value={value}
-          placeholder={label}
-          required={required}
-          onChange={this.handleChange}
-          onKeyPress={this.handleKeyPress}
-          onFocus={this.handleFocus}
-          onBlur={this.handleBlur}
-        />
+
+        {!this.props.mask && (
+          <input
+            className={Styles.field}
+            id={id}
+            name={name}
+            type={this.props.type}
+            step={this.props.step}
+            max={this.props.max}
+            value={value}
+            placeholder={placeholder || label}
+            required={required}
+            onChange={this.handleChange}
+            onKeyPress={this.handleKeyPress}
+            onFocus={this.handleFocus}
+            onBlur={this.handleBlur}
+          />
+        )}
+
+        {this.props.mask && (
+          <InputMask
+            className={Styles.field}
+            id={id}
+            name={name}
+            mask={this.props.mask}
+            maskChar={this.props.maskChar}
+            type={this.props.type}
+            step={this.props.step}
+            max={this.props.max}
+            value={value}
+            placeholder={placeholder || label}
+            required={required}
+            onChange={this.handleChange}
+            onKeyPress={this.handleKeyPress}
+            onFocus={this.handleFocus}
+            onBlur={this.handleBlur}
+          />
+        )}
+
         <label
           htmlFor={name}
           className={classNames(
@@ -125,26 +184,34 @@ class TextInput extends React.Component {
 }
 
 TextInput.propTypes = {
+  className: PropTypes.string,
+  id: PropTypes.string,
   name: PropTypes.string.isRequired,
   locked: PropTypes.bool,
   active: PropTypes.bool,
   error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   predicted: PropTypes.bool,
   required: PropTypes.bool,
-  value: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  mask: PropTypes.string,
+  maskChar: PropTypes.string,
   step: PropTypes.string,
   type: PropTypes.string,
   label: PropTypes.string,
   onChange: PropTypes.func,
   onKeyPress: PropTypes.func,
   onBlur: PropTypes.func,
-  onFocus: PropTypes.func
+  onFocus: PropTypes.func,
+  placeholder: PropTypes.string,
+  pattern: PropTypes.instanceOf(RegExp),
+  maxLength: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
 TextInput.defaultProps = {
   type: 'text',
   step: null,
-  max: null
+  max: null,
+  maxLength: null
 };
 
 export default TextInput;
