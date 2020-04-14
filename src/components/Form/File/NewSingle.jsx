@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import Dropzone from 'react-dopzone';
+import Dropzone from 'react-dropzone';
 
 import { authRequest } from '../../../helpers/apis';
 import classNames from 'classnames';

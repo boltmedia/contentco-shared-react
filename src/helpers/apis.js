@@ -3,11 +3,12 @@ import axios from 'axios';
 import Cookies from 'universal-cookie';
 
 const cookies = new Cookies();
-const token = cookies.get('token');
+const token = cookies.get('admin_token');
 
+export const CancelToken = axios.CancelToken;
 export const request = applyConverters(
   axios.create({
-    baseURL: env.API_ENDPOINT,
+    baseURL: process.env.API_ENDPOINT,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json'
@@ -17,7 +18,7 @@ export const request = applyConverters(
 
 export const authRequest = applyConverters(
   axios.create({
-    baseURL: env.API_ENDPOINT,
+    baseURL: process.env.API_ENDPOINT,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -25,6 +26,26 @@ export const authRequest = applyConverters(
     }
   })
 );
+
+export const authReqNoIntercept = applyConverters(
+  axios.create({
+    baseURL: process.env.API_ENDPOINT,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Token ${token}`
+    }
+  })
+);
+
+export const baseAuthRequest = axios.create({
+  baseURL: process.env.API_ENDPOINT,
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    Authorization: `Token ${token}`
+  }
+});
 
 export const toCamelCase = (str) => {
   return str.replace(/([\:\-\_]+(.))/g, (_, separator, letter, offset) => {
@@ -76,4 +97,52 @@ export const checkStatus = async (response) => {
       });
   }
   return toCamelCaseDict(data);
+};
+
+const interceptorErrorHandler = (error, requestCallback) => {
+  let errMessage;
+  if (error && error.nonFieldErrors && error.nonFieldErrors.length) {
+    errMessage = error.nonFieldErrors.join(' ');
+    requestCallback(errMessage);
+  } else {
+    const errorResponse =
+      (error.response && (error.response.data || error.response.statusText)) ||
+      error ||
+      '';
+    const errValues =
+      typeof errorResponse === 'string'
+        ? false
+        : Object.entries(errorResponse) || [];
+    if (errValues && errValues.length) {
+      errMessage = errValues
+        .map((item) => {
+          return `${(item[0][0] || '').toUpperCase()}${item[0].slice(1)}: ${
+            item[1]
+          }`;
+        })
+        .join(' ');
+      requestCallback(errMessage);
+    } else {
+      requestCallback(
+        (errorResponse && errorResponse.toString()) || 'Something went wrong!'
+      );
+    }
+  }
+};
+
+export const configAxiosErrorInterceptor = (requestCallback) => {
+  const arrRequest = [request, authRequest, baseAuthRequest];
+  arrRequest.forEach((req) => {
+    req.interceptors.response.use(
+      (response) => {
+        return response;
+      },
+      (error) => {
+        if (!axios.isCancel(error)) {
+          interceptorErrorHandler(error, requestCallback);
+        }
+        return Promise.reject(error);
+      }
+    );
+  });
 };
